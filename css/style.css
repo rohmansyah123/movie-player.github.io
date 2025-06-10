@@ -15,7 +15,7 @@
 /* --- Global Styles --- */
 body {
     margin: 0;
-    padding: 2rem 0; /* Padding atas bawah */
+    padding: 2rem 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -37,11 +37,11 @@ h1 {
 
 /* --- Main Container Layout --- */
 .main-container {
-    width: 95%; /* Lebih lebar untuk perangkat besar */
+    width: 95%;
     max-width: 1200px;
-    display: grid; /* Menggunakan CSS Grid untuk layout */
-    grid-template-columns: 2fr 1fr; /* 2 bagian untuk player, 1 bagian untuk pencarian */
-    gap: 1.5rem; /* Jarak antar kolom */
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
     background-color: var(--card-bg-color);
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-medium);
@@ -58,12 +58,15 @@ h1 {
 .video-container {
     position: relative;
     width: 100%;
-    padding-bottom: 56.25%; /* Rasio aspek 16:9 */
+    padding-bottom: 56.25%;
     height: 0;
     overflow: hidden;
-    background-color: #000;
+    background-color: #000; /* Tetap hitam untuk player yang kosong */
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-light);
+    display: flex; /* Tambahkan flex untuk memusatkan teks */
+    justify-content: center;
+    align-items: center;
 }
 
 .video-container iframe {
@@ -73,14 +76,31 @@ h1 {
     width: 100%;
     height: 100%;
     border: 0;
-    border-radius: var(--border-radius-md); /* Agar iframe juga memiliki radius */
+    border-radius: var(--border-radius-md);
 }
 
-/* --- Search & Results Section --- */
+/* Gaya untuk pesan awal di player */
+.video-container p {
+    color: white; /* Warna teks putih agar kontras dengan background hitam */
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2em;
+    font-weight: 500;
+    max-width: 80%; /* Batasi lebar teks */
+    /* Posisi absolute untuk memposisikan di tengah */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1; /* Pastikan teks di atas iframe jika ada masalah */
+}
+
+
+/* --- Search & Results Section (Sama seperti sebelumnya) --- */
 .video-search-section {
     display: flex;
     flex-direction: column;
-    background-color: var(--background-color); /* Sedikit beda background */
+    background-color: var(--background-color);
     border-radius: var(--border-radius-md);
     padding: 1rem;
     box-shadow: inset var(--shadow-light);
@@ -117,8 +137,8 @@ h1 {
     flex-direction: column;
     gap: 0.75rem;
     overflow-y: auto;
-    max-height: 400px; /* Tinggi maksimum untuk hasil pencarian */
-    padding-right: 0.5rem; /* Untuk scrollbar */
+    max-height: 400px;
+    padding-right: 0.5rem;
 }
 
 /* --- Scrollbar Customization (Webkit Browsers) --- */
@@ -173,10 +193,10 @@ h1 {
     padding: 1rem;
 }
 
-/* --- Responsive Adjustments --- */
+/* --- Responsive Adjustments (Sama seperti sebelumnya) --- */
 @media (max-width: 992px) {
     .main-container {
-        grid-template-columns: 1fr; /* Kolom tunggal pada tablet */
+        grid-template-columns: 1fr;
         padding: 1rem;
     }
     h1 {
@@ -199,6 +219,11 @@ h1 {
         gap: 1rem;
     }
     #search-results {
-        max-height: 300px; /* Sedikit lebih kecil di ponsel */
+        max-height: 300px;
     }
-}
+    .video-container p {
+        font-size: 1em; /* Ukuran font lebih kecil di mobile */
+        padding: 10px;
+    }
+        }
+    
