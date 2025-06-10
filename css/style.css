@@ -1,0 +1,204 @@
+/* --- CSS Variables --- */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --background-color: #f8f9fa;
+    --card-bg-color: #ffffff;
+    --text-color: #343a40;
+    --border-color: #dee2e6;
+    --shadow-light: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow-medium: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --border-radius-sm: 0.25rem;
+    --border-radius-md: 0.5rem;
+}
+
+/* --- Global Styles --- */
+body {
+    margin: 0;
+    padding: 2rem 0; /* Padding atas bawah */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--background-color);
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+h1 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: var(--shadow-light);
+}
+
+/* --- Main Container Layout --- */
+.main-container {
+    width: 95%; /* Lebih lebar untuk perangkat besar */
+    max-width: 1200px;
+    display: grid; /* Menggunakan CSS Grid untuk layout */
+    grid-template-columns: 2fr 1fr; /* 2 bagian untuk player, 1 bagian untuk pencarian */
+    gap: 1.5rem; /* Jarak antar kolom */
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-medium);
+    padding: 1.5rem;
+}
+
+/* --- Video Player Section --- */
+.video-player-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* Rasio aspek 16:9 */
+    height: 0;
+    overflow: hidden;
+    background-color: #000;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-light);
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: var(--border-radius-md); /* Agar iframe juga memiliki radius */
+}
+
+/* --- Search & Results Section --- */
+.video-search-section {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-color); /* Sedikit beda background */
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+    box-shadow: inset var(--shadow-light);
+}
+
+.video-search-section h2 {
+    color: var(--primary-color);
+    font-size: 1.75rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+#search-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+#search-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+#search-results {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow-y: auto;
+    max-height: 400px; /* Tinggi maksimum untuk hasil pencarian */
+    padding-right: 0.5rem; /* Untuk scrollbar */
+}
+
+/* --- Scrollbar Customization (Webkit Browsers) --- */
+#search-results::-webkit-scrollbar {
+    width: 8px;
+}
+#search-results::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+#search-results::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 10px;
+}
+#search-results::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.search-result-item {
+    display: block;
+    padding: 0.8rem 1rem;
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: var(--border-radius-sm);
+    transition: all 0.2s ease-in-out;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: var(--shadow-light);
+}
+
+.search-result-item:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+}
+
+.search-result-item.active {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border: 1px solid var(--primary-color);
+}
+
+.no-results {
+    text-align: center;
+    color: var(--secondary-color);
+    font-style: italic;
+    padding: 1rem;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) {
+    .main-container {
+        grid-template-columns: 1fr; /* Kolom tunggal pada tablet */
+        padding: 1rem;
+    }
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        padding: 1rem 0;
+    }
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+    .main-container {
+        width: 98%;
+        padding: 0.75rem;
+        gap: 1rem;
+    }
+    #search-results {
+        max-height: 300px; /* Sedikit lebih kecil di ponsel */
+    }
+}
