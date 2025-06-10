@@ -11,13 +11,13 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Ubah ke flex-start agar konten mulai dari atas */
+            justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
             color: #333;
-            padding-top: 20px; /* Sedikit padding di atas */
+            padding-top: 20px;
         }
         h1 {
             text-align: center;
@@ -26,10 +26,10 @@
         }
         .main-container {
             width: 90%;
-            max-width: 1200px; /* Lebar maksimum yang lebih besar untuk layout 2 kolom */
+            max-width: 1200px;
             display: flex;
-            flex-wrap: wrap; /* Izinkan wrapping untuk responsivitas */
-            gap: 20px; /* Jarak antar kolom */
+            flex-wrap: wrap;
+            gap: 20px;
             box-sizing: border-box;
             padding: 20px;
             background-color: #fff;
@@ -37,29 +37,42 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         .video-player-section {
-            flex: 2; /* Mengambil 2 bagian dari ruang yang tersedia */
-            min-width: 300px; /* Lebar minimum sebelum wrap */
+            flex: 2;
+            min-width: 300px;
         }
-        .video-list-section {
-            flex: 1; /* Mengambil 1 bagian dari ruang yang tersedia */
-            min-width: 200px; /* Lebar minimum sebelum wrap */
+        .video-search-section { /* Bagian untuk pencarian dan hasil */
+            flex: 1;
+            min-width: 280px; /* Lebar minimum untuk kolom pencarian */
             background-color: #f9f9f9;
             border-radius: 5px;
             padding: 15px;
             box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
         }
-        .video-list-section h2 {
+        .video-search-section h2 {
             margin-top: 0;
             color: #555;
             font-size: 1.5em;
             margin-bottom: 15px;
         }
-        #video-list {
+        #search-input {
+            width: calc(100% - 20px); /* Kurangi padding */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box; /* Padding termasuk dalam lebar */
+        }
+        #search-results {
             display: flex;
             flex-direction: column;
-            gap: 10px; /* Jarak antar item video */
+            gap: 8px; /* Jarak antar hasil pencarian */
+            overflow-y: auto; /* Memungkinkan scroll jika hasil terlalu banyak */
+            max-height: 400px; /* Tinggi maksimum untuk hasil pencarian */
         }
-        .video-item {
+        .search-result-item {
             display: block;
             padding: 10px 15px;
             background-color: #e0e0e0;
@@ -68,15 +81,23 @@
             border-radius: 5px;
             transition: background-color 0.2s ease, transform 0.1s ease;
             font-weight: bold;
+            white-space: nowrap; /* Mencegah judul terlalu panjang meluap */
+            overflow: hidden; /* Menyembunyikan teks yang meluap */
+            text-overflow: ellipsis; /* Menambahkan "..." jika teks terlalu panjang */
         }
-        .video-item:hover {
+        .search-result-item:hover {
             background-color: #d0d0d0;
             transform: translateY(-2px);
         }
-        .video-item.active {
-            background-color: #007bff; /* Warna biru untuk yang aktif */
+        .search-result-item.active {
+            background-color: #007bff;
             color: white;
             box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+        }
+        .no-results {
+            text-align: center;
+            color: #777;
+            font-style: italic;
         }
 
         /* Kontainer video sama seperti sebelumnya */
@@ -102,11 +123,14 @@
         /* Media Queries untuk Responsivitas */
         @media (max-width: 768px) {
             .main-container {
-                flex-direction: column; /* Ubah ke kolom pada layar kecil */
+                flex-direction: column;
             }
-            .video-player-section, .video-list-section {
-                flex: none; /* Hapus flex grow */
-                width: 100%; /* Ambil lebar penuh */
+            .video-player-section, .video-search-section {
+                flex: none;
+                width: 100%;
+            }
+            #search-results {
+                max-height: 250px; /* Kurangi tinggi maks di mobile */
             }
         }
         @media (max-width: 600px) {
@@ -118,28 +142,28 @@
             }
         }
     </style>
-    
 </head>
 <body>
-    <h1>Pilih Video yang Ingin Anda Saksikan</h1>
+    <h1>Saksikan Video Pilihan Anda</h1>
 
     <div class="main-container">
         <div class="video-player-section">
             <div class="video-container">
                 </div>
             <p style="text-align: center; margin-top: 20px;">
-                Tonton video ini untuk informasi lebih lanjut.
+                Ketik judul video di kolom pencarian untuk menemukan video yang Anda inginkan.
             </p>
         </div>
 
-        <div class="video-list-section">
-            <h2>Daftar Video</h2>
-            <div id="video-list">
+        <div class="video-search-section">
+            <h2>Cari Video</h2>
+            <input type="text" id="search-input" placeholder="Ketik judul video di sini...">
+            <div id="search-results">
                 </div>
         </div>
     </div>
 
     <script src="js/video-data.js"></script>
-    <script src="js/video-player.js"></script>
+    <script src="js/video-search.js"></script>
 </body>
 </html>
