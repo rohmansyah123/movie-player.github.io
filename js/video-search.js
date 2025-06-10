@@ -1,11 +1,17 @@
 // js/video-search.js
 
-// Pastikan `videoPlaylist` dari video-data.js sudah tersedia
-
 document.addEventListener('DOMContentLoaded', function() {
     const videoPlayerContainer = document.querySelector('.video-container');
     const searchInput = document.getElementById('search-input');
     const searchResultsContainer = document.getElementById('search-results');
+    const initialPlayerMessage = document.querySelector('.initial-player-message'); // Ambil pesan awal
+
+    // --- GANTI DENGAN URL GOOGLE SHEET JSON ANDA YANG SEBENARNYA ---
+    // Pastikan URL ini diakhiri dengan 'output=json'
+    const GOOGLE_SHEET_JSON_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQeSTPSNbrSSzzM6JqPARGhcBeeg0rLy05lQnP6qjNsNX5cFH9vxo2p036HzZvNfyqYhJfEJUCT8Ca3/pub?gid=0&single=true&output=json';
+    // ------------------------------------------------------------------
+
+    let videoPlaylist = []; // Playlist akan diisi dari Google Sheet
 
     // Fungsi untuk memuat video ke player
     function loadVideoIntoPlayer(videoUrl) {
@@ -14,15 +20,20 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Hapus pesan awal jika ada
+        if (initialPlayerMessage) {
+            initialPlayerMessage.style.display = 'none';
+        }
         // Hapus iframe yang ada jika ada
-        videoPlayerContainer.innerHTML = '';
+        videoPlayerContainer.querySelector('iframe')?.remove();
+
 
         const iframe = document.createElement('iframe');
         iframe.src = videoUrl;
         iframe.setAttribute('frameborder', '0');
         iframe.setAttribute('scrolling', 'no');
         iframe.setAttribute('allowfullscreen', '');
-        iframe.setAttribute('loading', 'lazy'); // Video hanya dimuat saat mendekati viewport
+        iframe.setAttribute('loading', 'lazy'); // Fitur lazy load
 
         videoPlayerContainer.appendChild(iframe);
     }
@@ -40,11 +51,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const resultItem = document.createElement('a');
             resultItem.href = '#';
             resultItem.classList.add('search-result-item');
-            resultItem.dataset.videoId = video.id;
+            resultItem.dataset.videoId = video.id; // Menyimpan ID video di data attribute
             resultItem.textContent = video.title;
 
             resultItem.addEventListener('click', function(event) {
-                event.preventDefault();
+                event.preventDefault(); // Mencegah link dari memuat ulang halaman
                 const selectedVideoId = this.dataset.videoId;
                 const selectedVideo = videoPlaylist.find(v => v.id === selectedVideoId);
 
@@ -65,39 +76,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fungsi untuk menangani pencarian
     function handleSearch() {
-        const searchTerm = searchInput.value.toLowerCase().trim();
+        const searchTerm = searchInput.value.toLowerCase().trim(); // Ambil input dan ubah ke huruf kecil
         let filteredVideos = [];
 
         if (searchTerm.length > 0) {
             filteredVideos = videoPlaylist.filter(video =>
-                video.title.toLowerCase().includes(searchTerm)
+                video.title.toLowerCase().includes(searchTerm) // Cari judul yang mengandung searchTerm
             );
         } else {
-            // Jika input pencarian kosong, tidak menampilkan hasil apapun (kosongkan)
-            // filteredVideos = [...videoPlaylist]; // <-- Baris ini Dihapus atau Dinonaktifkan
+            // Jika input pencarian kosong, tampilkan semua video
+            filteredVideos = [...videoPlaylist]; // Buat salinan agar tidak memodifikasi array asli
         }
         displaySearchResults(filteredVideos);
     }
 
-    // Event listener untuk input pencarian
-    searchInput.addEventListener('input', handleSearch);
+    // Fungsi untuk mengambil data dari Google Sheet
+    async function fetchVideoDataFromGoogleSheet() {
+        try {
+            const response = await fetch(GOOGLE_SHEET_JSON_URL);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
 
-    // --- Perubahan Penting di Sini ---
-    // Hapus atau nonaktifkan bagian ini agar tidak ada video yang diputar secara otomatis
-    /*
-    if (videoPlaylist.length > 0) {
-        loadVideoIntoPlayer(videoPlaylist[0].url);
-        const firstVideoId = videoPlaylist[0].id;
-        const firstItem = document.querySelector(`.search-result-item[data-video-id="${firstVideoId}"]`);
-        if (firstItem) {
-            firstItem.classList.add('active');
+            // Memparsing data dari format JSON Google Sheet
+            // Pastikan nama kolom di sheet Anda (misal: ID, Title, URL) sesuai dengan gsx$namakolom.$t
+            videoPlaylist = data.feed.entry.map(entry => ({
+                id: entry.gsx$id.$t,       // 'id' adalah nama kolom di sheet Anda
+                title: entry.gsx$title.$t, // 'title' adalah nama kolom di sheet Anda
+                url: entry.gsx$url.$t      // 'url' adalah nama kolom di sheet Anda
+            }));
+
+            console.log('Video data loaded:', videoPlaylist); // Untuk debugging
+            handleSearch(); // Tampilkan semua video di hasil pencarian setelah data dimuat
+        } catch (error) {
+            console.error('Gagal mengambil atau memparsing data dari Google Sheet:', error);
+            searchResultsContainer.innerHTML = '<p class="no-results" style="color: red;">Gagal memuat daftar video. Periksa koneksi atau URL Google Sheet Anda.</p>';
+            searchInput.style.display = 'none'; // Sembunyikan input pencarian jika gagal
         }
     }
-    */
-    // --- Akhir Perubahan ---
 
-    // Opsional: tampilkan semua video saat halaman dimuat jika input pencarian kosong
-    // Jika Anda ingin hasil pencarian menampilkan semua video secara default saat halaman dimuat,
-    // panggil handleSearch() di sini:
-    // handleSearch(); // <-- Aktifkan ini jika Anda ingin menampilkan semua video secara default di hasil pencarian
+    // Event listener untuk input pencarian
+    searchInput.addEventListener('input', handleSearch); // Akan memicu pencarian setiap kali ada input
+
+    // Panggil fungsi untuk mengambil data dari Google Sheet saat DOM sudah dimuat
+    fetchVideoDataFromGoogleSheet();
 });
