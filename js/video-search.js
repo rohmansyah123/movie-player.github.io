@@ -4,13 +4,13 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     const videoPlayerContainer = document.querySelector('.video-container');
-    const searchInput = document.getElementById('search-input'); // Input teks untuk pencarian
-    const searchResultsContainer = document.getElementById('search-results'); // Kontainer untuk hasil pencarian
+    const searchInput = document.getElementById('search-input');
+    const searchResultsContainer = document.getElementById('search-results');
 
     // Fungsi untuk memuat video ke player
     function loadVideoIntoPlayer(videoUrl) {
         if (!videoUrl) {
-            videoPlayerContainer.innerHTML = '<p style="color: red; text-align: center;">URL video tidak valid.</p>';
+            videoPlayerContainer.innerHTML = '<p class="no-results">URL video tidak valid.</p>';
             return;
         }
 
@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
         iframe.setAttribute('frameborder', '0');
         iframe.setAttribute('scrolling', 'no');
         iframe.setAttribute('allowfullscreen', '');
+        // --- Penambahan Lazy Load ---
+        iframe.setAttribute('loading', 'lazy'); // Video hanya dimuat saat mendekati viewport
+        // ---------------------------
 
         videoPlayerContainer.appendChild(iframe);
     }
@@ -50,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (selectedVideo) {
                     loadVideoIntoPlayer(selectedVideo.url);
 
-                    // Optional: Tandai video yang sedang aktif
+                    // Tandai video yang sedang aktif
                     const currentActive = document.querySelector('.search-result-item.active');
                     if (currentActive) {
                         currentActive.classList.remove('active');
@@ -64,27 +67,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fungsi untuk menangani pencarian
     function handleSearch() {
-        const searchTerm = searchInput.value.toLowerCase(); // Ambil input dan ubah ke huruf kecil
+        const searchTerm = searchInput.value.toLowerCase().trim(); // Tambahkan trim() untuk menghilangkan spasi
         let filteredVideos = [];
 
         if (searchTerm.length > 0) {
             filteredVideos = videoPlaylist.filter(video =>
-                video.title.toLowerCase().includes(searchTerm) // Cari judul yang mengandung searchTerm
+                video.title.toLowerCase().includes(searchTerm)
             );
+        } else {
+            // Jika input pencarian kosong, tampilkan semua video secara default
+            filteredVideos = [...videoPlaylist]; // Buat salinan agar tidak memodifikasi array asli
         }
-        // Jika input kosong, tampilkan semua video atau kosongkan hasil
-        // Untuk saat ini, jika kosong, tidak menampilkan apa-apa kecuali ada hasil pencarian
         displaySearchResults(filteredVideos);
     }
 
     // Event listener untuk input pencarian
-    searchInput.addEventListener('input', handleSearch); // Akan memicu pencarian setiap kali ada input
+    searchInput.addEventListener('input', handleSearch);
 
-    // Inisialisasi: Secara default, putar video pertama di playlist saat halaman dimuat (opsional)
+    // Inisialisasi: Panggil handleSearch untuk menampilkan semua video saat halaman dimuat
+    // (atau Anda bisa memutar video pertama dan tidak menampilkan daftar awal jika ingin)
+    handleSearch(); // Ini akan menampilkan semua video saat pertama kali dimuat
+
+    // Secara default, putar video pertama di playlist saat halaman dimuat
     if (videoPlaylist.length > 0) {
         loadVideoIntoPlayer(videoPlaylist[0].url);
-        // Tandai video pertama jika Anda ingin ada hasil default (tapi ini fitur pencarian, jadi mungkin tidak perlu)
-        // Jika Anda ingin menampilkan semua video secara default, panggil displaySearchResults(videoPlaylist);
+        // Tandai video pertama sebagai aktif di hasil pencarian awal
+        const firstVideoId = videoPlaylist[0].id;
+        const firstItem = document.querySelector(`.search-result-item[data-video-id="${firstVideoId}"]`);
+        if (firstItem) {
+            firstItem.classList.add('active');
+        }
     }
 });
-            
