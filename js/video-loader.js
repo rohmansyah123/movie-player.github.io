@@ -1,23 +1,73 @@
-// Memastikan skrip dijalankan setelah seluruh konten HTML dimuat
 document.addEventListener('DOMContentLoaded', function() {
-    // Mendapatkan elemen kontainer tempat video akan ditempatkan
     const videoContainer = document.querySelector('.video-container');
+    const videoDescription = document.getElementById('video-description');
+    const markdownFilePath = 'content/video-links.md'; // Path ke file Markdown Anda
 
-    // --- Bagian yang perlu Anda ubah jika link video berubah ---
-    const videoUrl = "https://short.icu/v6oUMlhx2";
-    // ---------------------------------------------------------
+    // Fungsi untuk menampilkan pesan error
+    function displayError(message) {
+        if (videoDescription) {
+            videoDescription.textContent = 'Error: ' + message;
+            videoDescription.style.color = 'red';
+        }
+        if (videoContainer) {
+            videoContainer.innerHTML = '<div class="error-message">' + message + '</div>';
+        }
+    }
 
-    // Membuat elemen iframe baru secara dinamis
-    const iframe = document.createElement('iframe');
+    // Fungsi untuk mengekstrak URL dari string Markdown
+    function extractVideoUrlFromMarkdown(markdownContent) {
+        // Regex untuk menemukan link Markdown: [teks](url "title")
+        const regex = /\[.*?\]\((https?:\/\/[^\s\)]+)(?: \"(?:.*?)\")?\)/g;
+        let match;
+        const urls = [];
 
-    // Mengatur atribut-atribut yang diperlukan untuk iframe video
-    iframe.src = videoUrl; // URL sumber video
-    iframe.setAttribute('frameborder', '0'); // Menghilangkan bingkai iframe
-    iframe.setAttribute('scrolling', 'no'); // Menonaktifkan scrollbar
-    iframe.setAttribute('allowfullscreen', ''); // Memungkinkan mode layar penuh
-    // Anda juga bisa menambahkan atribut lain jika diperlukan, misal:
-    // iframe.setAttribute('allow', 'autoplay; encrypted-media');
+        while ((match = regex.exec(markdownContent)) !== null) {
+            urls.push(match[1]); // match[1] adalah URL
+        }
 
-    // Memasukkan elemen iframe yang sudah dibuat ke dalam videoContainer
-    videoContainer.appendChild(iframe);
+        // Ambil URL pertama yang ditemukan. Anda bisa memodifikasi ini
+        // untuk memilih URL tertentu jika ada banyak di file Markdown.
+        return urls.length > 0 ? urls[0] : null;
+    }
+
+    // Mengambil konten file Markdown
+    fetch(markdownFilePath)
+        .then(response => {
+            if (!response.ok) {
+                // Tangani kasus di mana file tidak ditemukan atau ada masalah jaringan
+                throw new Error(`Gagal memuat file Markdown: ${response.statusText} (${response.status}). Pastikan file '${markdownFilePath}' ada dan diakses melalui server web.`);
+            }
+            return response.text();
+        })
+        .then(markdownContent => {
+            // Ekstrak URL video dari konten Markdown
+            const videoUrl = extractVideoUrlFromMarkdown(markdownContent);
+
+            if (videoUrl) {
+                // Jika URL ditemukan, buat dan masukkan iframe
+                const iframe = document.createElement('iframe');
+                iframe.src = videoUrl;
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('scrolling', 'no');
+                iframe.setAttribute('allowfullscreen', '');
+
+                if (videoContainer) {
+                    videoContainer.innerHTML = ''; // Bersihkan kontainer sebelum menambahkan iframe
+                    videoContainer.appendChild(iframe);
+                }
+
+                // Opsional: Perbarui deskripsi atau informasi lain
+                if (videoDescription) {
+                    // Anda bisa mengurai lebih banyak dari Markdown jika perlu,
+                    // atau hanya menghapus teks "Memuat video..."
+                    videoDescription.textContent = 'Video berhasil dimuat. Selamat menonton!';
+                }
+            } else {
+                displayError('Tidak ada URL video yang ditemukan di file Markdown.');
+            }
+        })
+        .catch(error => {
+            console.error('Ada masalah saat memuat atau memproses video:', error);
+            displayError(`Gagal memuat video. ${error.message}`);
+        });
 });
