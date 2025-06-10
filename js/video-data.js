@@ -8,7 +8,7 @@ const videoPlaylist = [
     },
     {
         id: 'video2',
-        title: 'Tutorial Dasar HTML & CSS',
+        title: 'The Accountant 2',
         url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' // Contoh link video YouTube
     },
     {
