@@ -4,7 +4,7 @@ const videoPlaylist = [
     {
         id: 'video1',
         title: 'Pengantar Teknologi Web',
-        url: 'https://short.icu/v6oUMlhx2' // Ganti dengan link video Anda
+        url: 'https://short.icu/0FGp5kxNJ' // Ganti dengan link video Anda
     },
     {
         id: 'video2',
