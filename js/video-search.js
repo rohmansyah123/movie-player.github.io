@@ -22,9 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         iframe.setAttribute('frameborder', '0');
         iframe.setAttribute('scrolling', 'no');
         iframe.setAttribute('allowfullscreen', '');
-        // --- Penambahan Lazy Load ---
         iframe.setAttribute('loading', 'lazy'); // Video hanya dimuat saat mendekati viewport
-        // ---------------------------
 
         videoPlayerContainer.appendChild(iframe);
     }
@@ -67,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fungsi untuk menangani pencarian
     function handleSearch() {
-        const searchTerm = searchInput.value.toLowerCase().trim(); // Tambahkan trim() untuk menghilangkan spasi
+        const searchTerm = searchInput.value.toLowerCase().trim();
         let filteredVideos = [];
 
         if (searchTerm.length > 0) {
@@ -75,8 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 video.title.toLowerCase().includes(searchTerm)
             );
         } else {
-            // Jika input pencarian kosong, tampilkan semua video secara default
-            filteredVideos = [...videoPlaylist]; // Buat salinan agar tidak memodifikasi array asli
+            // Jika input pencarian kosong, tidak menampilkan hasil apapun (kosongkan)
+            // filteredVideos = [...videoPlaylist]; // <-- Baris ini Dihapus atau Dinonaktifkan
         }
         displaySearchResults(filteredVideos);
     }
@@ -84,18 +82,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener untuk input pencarian
     searchInput.addEventListener('input', handleSearch);
 
-    // Inisialisasi: Panggil handleSearch untuk menampilkan semua video saat halaman dimuat
-    // (atau Anda bisa memutar video pertama dan tidak menampilkan daftar awal jika ingin)
-    handleSearch(); // Ini akan menampilkan semua video saat pertama kali dimuat
-
-    // Secara default, putar video pertama di playlist saat halaman dimuat
+    // --- Perubahan Penting di Sini ---
+    // Hapus atau nonaktifkan bagian ini agar tidak ada video yang diputar secara otomatis
+    /*
     if (videoPlaylist.length > 0) {
         loadVideoIntoPlayer(videoPlaylist[0].url);
-        // Tandai video pertama sebagai aktif di hasil pencarian awal
         const firstVideoId = videoPlaylist[0].id;
         const firstItem = document.querySelector(`.search-result-item[data-video-id="${firstVideoId}"]`);
         if (firstItem) {
             firstItem.classList.add('active');
         }
     }
+    */
+    // --- Akhir Perubahan ---
+
+    // Opsional: tampilkan semua video saat halaman dimuat jika input pencarian kosong
+    // Jika Anda ingin hasil pencarian menampilkan semua video secara default saat halaman dimuat,
+    // panggil handleSearch() di sini:
+    // handleSearch(); // <-- Aktifkan ini jika Anda ingin menampilkan semua video secara default di hasil pencarian
 });
