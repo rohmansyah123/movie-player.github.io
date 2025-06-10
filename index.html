@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Landing Page</title>
+    <style>
+        /* CSS Styling untuk Tampilan dan Responsivitas */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Mengatur item secara kolom */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Mengisi tinggi viewport penuh */
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2em; /* Ukuran font judul */
+        }
+        .main-content {
+            width: 90%; /* Konten utama mengambil 90% lebar */
+            max-width: 960px; /* Lebar maksimum untuk desktop */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box; /* Padding termasuk dalam lebar */
+        }
+        .video-container {
+            position: relative;
+            width: 100%; /* Mengisi 100% lebar parent .main-content */
+            padding-bottom: 56.25%; /* Rasio aspek 16:9 (9/16 * 100%) */
+            height: 0; /* Penting untuk trik rasio aspek */
+            overflow: hidden; /* Menyembunyikan bagian yang meluap */
+            background-color: #000; /* Latar belakang hitam saat loading */
+            border-radius: 8px; /* Sudut membulat */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Efek bayangan */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0; /* Menghilangkan border iframe default */
+        }
+        /* Media Queries untuk Responsivitas Lebih Lanjut (opsional) */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            .main-content {
+                width: 95%; /* Lebih banyak ruang di perangkat kecil */
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <h1>Saksikan Video Inspiratif Kami!</h1>
+        <div class="video-container">
+            </div>
+        <p style="text-align: center; margin-top: 30px;">
+            Dapatkan informasi lebih lanjut setelah menonton video ini.
+        </p>
+    </div>
+
+    <script src="js/video-loader.js"></script>
+</body>
+</html>
