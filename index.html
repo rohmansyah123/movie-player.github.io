@@ -3,34 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Landing Page (Markdown)</title>
+    <title>Video Landing Page</title>
     <style>
+        /* CSS Styling untuk Tampilan dan Responsivitas */
         body {
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start; /* Ubah ke flex-start agar konten mulai dari atas */
             align-items: center;
             min-height: 100vh;
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
             color: #333;
+            padding-top: 20px; /* Sedikit padding di atas */
         }
         h1 {
             text-align: center;
             margin-bottom: 20px;
             font-size: 2em;
         }
-        .main-content {
+        .main-container {
             width: 90%;
-            max-width: 960px;
+            max-width: 1200px; /* Lebar maksimum yang lebih besar untuk layout 2 kolom */
+            display: flex;
+            flex-wrap: wrap; /* Izinkan wrapping untuk responsivitas */
+            gap: 20px; /* Jarak antar kolom */
+            box-sizing: border-box;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .video-player-section {
+            flex: 2; /* Mengambil 2 bagian dari ruang yang tersedia */
+            min-width: 300px; /* Lebar minimum sebelum wrap */
+        }
+        .video-list-section {
+            flex: 1; /* Mengambil 1 bagian dari ruang yang tersedia */
+            min-width: 200px; /* Lebar minimum sebelum wrap */
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+        }
+        .video-list-section h2 {
+            margin-top: 0;
+            color: #555;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        #video-list {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
+            gap: 10px; /* Jarak antar item video */
         }
+        .video-item {
+            display: block;
+            padding: 10px 15px;
+            background-color: #e0e0e0;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            font-weight: bold;
+        }
+        .video-item:hover {
+            background-color: #d0d0d0;
+            transform: translateY(-2px);
+        }
+        .video-item.active {
+            background-color: #007bff; /* Warna biru untuk yang aktif */
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Kontainer video sama seperti sebelumnya */
         .video-container {
             position: relative;
             width: 100%;
@@ -49,32 +98,47 @@
             height: 100%;
             border: 0;
         }
-        .error-message {
-            color: red;
-            font-weight: bold;
-            margin-top: 20px;
+
+        /* Media Queries untuk Responsivitas */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column; /* Ubah ke kolom pada layar kecil */
+            }
+            .video-player-section, .video-list-section {
+                flex: none; /* Hapus flex grow */
+                width: 100%; /* Ambil lebar penuh */
+            }
         }
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.5em;
             }
-            .main-content {
-                width: 95%;
+            .main-container {
                 padding: 10px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="main-content">
-        <h1>Saksikan Video Pilihan Kami!</h1>
-        <div class="video-container">
-            </div>
-        <p id="video-description" style="text-align: center; margin-top: 30px;">
-            Memuat video...
-        </p>
+    <h1>Pilih Video yang Ingin Anda Saksikan</h1>
+
+    <div class="main-container">
+        <div class="video-player-section">
+            <div class="video-container">
+                </div>
+            <p style="text-align: center; margin-top: 20px;">
+                Tonton video ini untuk informasi lebih lanjut.
+            </p>
+        </div>
+
+        <div class="video-list-section">
+            <h2>Daftar Video</h2>
+            <div id="video-list">
+                </div>
+        </div>
     </div>
 
-    <script src="js/video-loader.js"></script>
+    <script src="js/video-data.js"></script>
+    <script src="js/video-player.js"></script>
 </body>
 </html>
